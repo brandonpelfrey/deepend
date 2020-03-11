@@ -1,8 +1,4 @@
-# deepend
-This is a basic C++ Thread Pool implementation for use in other projects.
 
-# Example
-```cpp
 #include <chrono>
 #include <cstdio>
 #include "ThreadPool.h"
@@ -11,13 +7,15 @@ int main(int argc, char **argv)
 {
   using deepend::ThreadPool;
 
-  const int n_workers = 16;
-  ThreadPool work(n_workers);
+  // Create a ThreadPool with specified number of threads.
+  // (If you specify none, it's determined by the hardware.)
+  ThreadPool work(32);
 
-  const int n_tasks = 10000;
-  for (int i = 0; i < n_tasks; ++i)
+  // Enqueue a bunch of tasks to be worked on by the thread pool.
+  for (int i = 0; i < 100; ++i)
     work.Enqueue([&] {
       // Do expensive calculation.
+      std::this_thread::sleep_for(std::chrono::milliseconds(rand() % 500));
     });
 
   // Wait for all of the queue and currently running work to complete.
@@ -29,9 +27,3 @@ int main(int argc, char **argv)
   // NOTE : Worker threads will shutdown on thread pool destruction
   return 0;
 }
-```
-
-## todo
-- [❌] Return values as future
-  - *After reading, sounds like this might have a lot of overhead for the futures and messaging, but still needs investigation.*
-- [ ] Basic testing
